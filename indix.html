@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Interactive Code Challenge</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            max-width: 1000px;
+            height: 550px;
+            background-color: #111827;
+            color: #f3f4f6;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #374151;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .instructions-pane {
+            flex: 1;
+            padding: 24px;
+            border-right: 1px solid #374151;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #1f2937;
+        }
+
+        .title {
+            margin: 0 0 12px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        .instructions-text {
+            margin: 0 0 24px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+
+        .test-suite-container {
+            background-color: #111827;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+        }
+
+        .section-subtitle {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #9ca3af;
+        }
+
+        .test-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #4b5563;
+            transition: background-color 0.2s ease;
+        }
+
+        .test-description {
+            font-size: 14px;
+            color: #e5e7eb;
+        }
+
+        .editor-pane {
+            flex: 1.5;
+            display: flex;
+            flex-direction: column;
+            background-color: #111827;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1f2937;
+            padding: 10px 24px;
+            font-size: 14px;
+            color: #9ca3af;
+            font-family: monospace;
+            border-bottom: 1px solid #374151;
+        }
+
+        .reset-button {
+            background: none;
+            border: none;
+            color: #f97316;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .text-area {
+            flex: 1;
+            background-color: #111827;
+            color: #34d399;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            padding: 20px;
+            border: none;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .action-footer {
+            padding: 16px 24px;
+            background-color: #1f2937;
+            border-top: 1px solid #374151;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .run-button {
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .run-button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .success-message {
+            color: #34d399;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="instructions-pane">
+            <div>
+                <h2 class="title" id="challenge-title"></h2>
+                <p class="instructions-text" id="challenge-instructions"></p>
+            </div>
+            
+            <div class="test-suite-container">
+                <h3 class="section-subtitle">Test Cases</h3>
+                <div id="test-cases-list"></div>
+            </div>
+        </div>
+
+        <div class="editor-pane">
+            <div class="editor-header">
+                <span>SpeedCheck.java</span>
+                <button class="reset-button" id="btn-reset">Reset Code</button>
+            </div>
+            
+            <textarea class="text-area" id="code-editor" spellcheck="false"></textarea>
+
+            <div class="action-footer">
+                <button class="run-button" id="btn-run">Run Tests</button>
+                <div class="success-message" id="success-msg">
+                    🎉 Awesome job! All test cases passed successfully.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const challenge = {
+            title: 'Fix the Variable and Return',
+            instructions: 'Declare an integer variable named `speed` set to `50`. Then, return `speed` multiplied by 2.',
+            startingCode: `public class SpeedCheck {\n    public int getDoubleSpeed() {\n        \n        return 0;\n    }\n}`,
+            testCases: [
+                {
+                    description: 'Contains the declaration of integer variable "speed"',
+                    validate: (code) => /int\s+speed\s*=\s*50\s*;/.test(code)
+                },
+                {
+                    description: 'Returns speed multiplied by 2 (speed * 2)',
+                    validate: (code) => /return\s+speed\s*\*\s*2\s*;/.test(code) || /return\s+100\s*;/.test(code)
+                }
+            ]
+        };
+
+        const titleEl = document.getElementById('challenge-title');
+        const instructionsEl = document.getElementById('challenge-instructions');
+        const editorEl = document.getElementById('code-editor');
+        const testCasesListEl = document.getElementById('test-cases-list');
+        const successMsgEl = document.getElementById('success-msg');
+        const btnRun = document.getElementById('btn-run');
+        const btnReset = document.getElementById('btn-reset');
+
+        function initChallenge() {
+            titleEl.textContent = challenge.title;
+            instructionsEl.textContent = challenge.instructions;
+            editorEl.value = challenge.startingCode;
+            
+            testCasesListEl.innerHTML = '';
+            challenge.testCases.forEach((test, index) => {
+                const row = document.createElement('div');
+                row.className = 'test-row';
+                row.innerHTML = `
+                    <span class="status-indicator" id="status-${index}">○</span>
+                    <span class="test-description">${test.description}</span>
+                `;
+                testCasesListEl.appendChild(row);
+            });
+            successMsgEl.style.display = 'none';
+        }
+
+        function runTests() {
+            const userCode = editorEl.value;
+            let allPassed = true;
+
+            challenge.testCases.forEach((test, index) => {
+                const indicator = document.getElementById(`status-${index}`);
+                let passed = false;
+
+                try {
+                    passed = test.validate(userCode);
+                } catch (e) {
+                    passed = false;
+                }
+
+                if (passed) {
+                    indicator.textContent = '✓';
+                    indicator.style.backgroundColor = '#10b981';
+                } else {
+                    indicator.textContent = '✕';
+                    indicator.style.backgroundColor = '#ef4444';
+                    allPassed = false;
+                }
+            });
+
+            if (allPassed) {
+                successMsgEl.style.display = 'block';
+            } else {
+                successMsgEl.style.display = 'none';
+            }
+        }
+
+        btnRun.addEventListener('click', runTests);
+        btnReset.addEventListener('click', initChallenge);
+
+        initChallenge();
+    </script>
+</body>
+</html>
