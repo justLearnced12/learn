@@ -1,19 +1,574 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>POl</title>
-  </head>
-  <body>
-    <h1>Welcome to POl</h1>
-    <section>    
-      <h2>PicOfLegends</h2>
-      <p>here we introduce you to the <strong>legends</strong> of 11-PROG2</p>
-      <figure>
-        <a href="https://www.google.com/search?sca_esv=f0845138a1a7b8ba&rlz=1C1YTUH_enPH1044PH1045&sxsrf=APpeQnuCnLSO7hCrZ6_FWCbSwT89YeDHZQ:1782307679318&udm=2&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832VstEKsVDqPorK0Gahnm2no1YAFtlsByIZaJlK7yr6gIShz8_nfnRyCFKBFanfbilRY_0kwdNHtgmcDRLQV2EOTgQQNHPW-40y0BLSqR0sKVQJ9SqohMh3B7F-UdYZ8Eakj42P4nLXxFdbhvy4Un33Fa98qr2pLi-KTIxWjIK9UoYjN6lQ&q=horse&sa=X&ved=2ahUKEwi3o-zA_Z-VAxU7r1YBHTwCKC8QtKgLegQIFBAB&biw=1280&bih=593&dpr=1.5#sv=CAMSURoyKhBlLWNiSFkxSndfc0dxRU1NMg5jYkhZMUp3X3NHcUVNTToOUmt2R2NyY0kybHZzYU0gBCoXCgFzEhBlLWNiSFkxSndfc0dxRU1NGAEwARgHIKS5mfQGSggQARgBIAEoAQ">
-       <img src="hoarse.jpg"alt="an image of a horse gaming"></a>
-          <figcaption>this <Strong>horse</Strong> loves playing games</figcaption> 
-      </figure>   
-    </section>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Game Based Learning Platform</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --bg-editor: #0b0f19;
+            --accent-primary: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
 
-  </body>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            background-color: var(--accent-primary);
+            color: var(--text-main);
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .screen-landing {
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .level-card {
+            background-color: var(--bg-card);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .level-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .level-card h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .level-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .badge-beginner { background-color: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .badge-intermediate { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .badge-advanced { background-color: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+
+        .game-layout {
+            display: flex;
+            background-color: var(--bg-card);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            flex: 1;
+            padding: 24px;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .main-editor {
+            flex: 1.5;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-editor);
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-bg {
+            background-color: #334155;
+            height: 6px;
+            border-radius: 9999px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background-color: var(--success);
+            height: 100%;
+            width: 20%;
+            transition: width 0.3s ease;
+        }
+
+        .instructions-body h2 {
+            font-size: 20px;
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+
+        .instructions-body p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .test-suite {
+            background-color: var(--bg-main);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            margin-top: 20px;
+        }
+
+        .test-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .test-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .test-status {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 10px;
+            background-color: #475569;
+        }
+
+        .editor-header {
+            background-color: #1e293b;
+            padding: 12px 24px;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .code-textarea {
+            flex: 1;
+            background-color: var(--bg-editor);
+            color: #34d399;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 15px;
+            padding: 24px;
+            border: none;
+            resize: none;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        .editor-footer {
+            padding: 16px 24px;
+            background-color: #1e293b;
+            border-top: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .feedback-message {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .screen-complete {
+            text-align: center;
+            background-color: var(--bg-card);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 48px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .complete-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: LANDING -->
+    <div id="screen-landing" class="screen active">
+        <div class="screen-landing">
+            <h1 class="hero-title">Master Java Through Play</h1>
+            <p class="hero-subtitle">Step into an interactive development arena. Tackle scaling coding challenges, debug runtime state, and advance your skills through real-time code compilation matching.</p>
+            <button class="btn" onclick="navigateTo('screen-selection')">Let's Learn</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: LEVEL SELECTION -->
+    <div id="screen-selection" class="screen">
+        <h2 style="text-align: center; font-size: 32px; margin-bottom: 12px;">Choose Your Arena</h2>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 32px;">Select an initial difficulty layer to deploy corresponding challenge modules.</p>
+        
+        <div class="level-grid">
+            <div class="level-card" onclick="startLevel('beginner')">
+                <span class="badge badge-beginner">Layer 01</span>
+                <h3>Beginner</h3>
+                <p>Covers structural logic baselines, basic syntax layout, variable assignments, and evaluations.</p>
+                <button class="btn" style="width: 100%;">Enter</button>
+            </div>
+            <div class="level-card" onclick="startLevel('intermediate')">
+                <span class="badge badge-intermediate">Layer 02</span>
+                <h3>Intermediate</h3>
+                <p>Explores object patterns, class schemas, collection arrays, and standard exception handling architectures.</p>
+                <button class="btn" style="width: 100%;">Enter</button>
+            </div>
+            <div class="level-card" onclick="startLevel('advanced')">
+                <span class="badge badge-advanced">Layer 03</span>
+                <h3>Advanced</h3>
+                <p>Dives deep into structural lambda assignments, concurrent thread processes, stream operations, and structural generics.</p>
+                <button class="btn" style="width: 100%;">Enter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: GAMEPLAY -->
+    <div id="screen-gameplay" class="screen">
+        <div class="game-layout">
+            <div class="sidebar">
+                <div>
+                    <div class="progress-container">
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span id="game-level-title" style="font-weight: 600; text-transform: capitalize;"></span>
+                            <span id="game-progress-text">Challenge 1 of 5</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="progress-fill" class="progress-bar-fill"></div>
+                        </div>
+                    </div>
+
+                    <div class="instructions-body">
+                        <h2 id="challenge-title">Loading...</h2>
+                        <p id="challenge-instructions">Loading details...</p>
+                    </div>
+                </div>
+
+                <div class="test-suite">
+                    <div class="test-title">Validation Checks</div>
+                    <div id="test-list"></div>
+                </div>
+            </div>
+
+            <div class="main-editor">
+                <div class="editor-header">
+                    <span id="file-name">Solution.java</span>
+                    <span style="color: var(--text-muted);">Interactive Buffer</span>
+                </div>
+                <textarea id="code-editor" class="code-textarea" spellcheck="false"></textarea>
+                <div class="editor-footer">
+                    <span id="feedback" class="feedback-message"></span>
+                    <div>
+                        <button class="btn" id="action-btn" onclick="handleAction()">Run Tests</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: COMPLETE -->
+    <div id="screen-complete" class="screen">
+        <div class="screen-complete">
+            <div class="complete-icon">🏆</div>
+            <h2 style="font-size: 32px; margin-bottom: 12px;">Level Cleared!</h2>
+            <p style="color: var(--text-muted); margin-bottom: 32px; line-height: 1.6;">You have successfully satisfied validation metrics across all 5 code sequences within this tier.</p>
+            <button class="btn" onclick="navigateTo('screen-selection')">Select Another Tier</button>
+        </div>
+    </div>
+
+    <script>
+        const challengeBank = {
+            beginner: [
+                {
+                    title: "Variable Declaration",
+                    instructions: "Declare an integer named `score` and assign it a value of `100`.",
+                    startingCode: "public class Main {\n    public static void main(String[] args) {\n        // Declare variable below\n        \n    }\n}",
+                    tests: [{ desc: "Contains 'int score = 100;'", rule: c => /int\s+score\s*=\s*100\s*;/.test(c) }]
+                },
+                {
+                    title: "Basic Arithmetical Operations",
+                    instructions: "Complete the method to return variable `a` multiplied by variable `b`.",
+                    startingCode: "public class MathUtils {\n    public int multiply(int a, int b) {\n        return 0;\n    }\n}",
+                    tests: [{ desc: "Returns product expression", rule: c => /return\s+a\s*\*\s*b\s*;/.test(c) }]
+                },
+                {
+                    title: "Conditional Evaluation Blocks",
+                    instructions: "Write a condition layout checking if `num` is greater than 0. If verified, return true.",
+                    startingCode: "public class Logic {\n    public boolean isPositive(int num) {\n        // Your code here\n        \n        return false;\n    }\n}",
+                    tests: [{ desc: "Implements valid if declaration checking conditions", rule: c => /if\s*\(\s*num\s*>\s*0\s*\)/.test(c) }]
+                },
+                {
+                    title: "Loop Iterations",
+                    instructions: "Create a standard incrementing loop running exactly 5 times (0 up to 4 inclusive) using index counter `i`.",
+                    startingCode: "public class Loop {\n    public void runLoop() {\n        // Implement standard looping frame below\n        \n    }\n}",
+                    tests: [{ desc: "Implements incremental initialization loop structure", rule: c => /for\s*\(\s*int\s+i\s*=\s*0\s*;\s*i\s*<\s*5\s*;\s*i\s*\+\+\s*\)/.test(c) }]
+                },
+                {
+                    title: "String Concatenation Patterns",
+                    instructions: "Modify the method to return the parameter `name` appended directly behind greeting sequence \"Hello, \".",
+                    startingCode: "public class Greeter {\n    public String sayHello(String name) {\n        return \"\";\n    }\n}",
+                    tests: [{ desc: "Concatenates matching elements accurately", rule: c => /return\s+"Hello,\s*"\s*\+\s*name\s*;/.test(c) }]
+                }
+            ],
+            intermediate: [
+                {
+                    title: "Instance Initialization Schemas",
+                    instructions: "Initialize a standard new instance of object entity `ArrayList` assigned to reference destination list.",
+                    startingCode: "import java.util.ArrayList;\npublic class Storage {\n    public void setup() {\n        ArrayList list;\n        // Assign instance below\n        \n    }\n}",
+                    tests: [{ desc: "Allocates memory allocation safely via new allocations", rule: c => /list\s*=\s*new\s+ArrayList\(\)\s*;/.test(c) }]
+                },
+                {
+                    title: "Method Overriding Layouts",
+                    instructions: "Override parent interface structure method `toString` to emit string label returning message \"Data\".",
+                    startingCode: "public class Payload {\n    // Override toString method layout\n    \n}",
+                    tests: [{ desc: "Implements string override method framework", rule: c => /public\s+String\s+toString\(\)/.test(c) && /return\s+"Data"\s*;/.test(c) }]
+                },
+                {
+                    title: "Array Collection Storage Operations",
+                    instructions: "Invoke operational call `.add()` extending items stack passing variable item reference target safely.",
+                    startingCode: "import java.util.ArrayList;\npublic class Basket {\n    public void push(ArrayList items, String item) {\n        // Append here\n        \n    }\n}",
+                    tests: [{ desc: "Invokes addition call sequence onto list targets", rule: c => /items\.add\(\s*item\s*\)\s*;/.test(c) }]
+                },
+                {
+                    title: "Encapsulation Design Accessors",
+                    instructions: "Provide clean getter encapsulation framework reading private integer field `id`.",
+                    startingCode: "public class Entity {\n    private int id;\n    // Define getter accessor structural pattern\n    \n}",
+                    tests: [{ desc: "Exposes return variable via safe reading accessors", rule: c => /public\s+int\s+getId\(\)/.test(c) && /return\s+id\s*;/.test(c) }]
+                },
+                {
+                    title: "Exception Safety Blocks",
+                    instructions: "Enclose dynamic executable blocks safely behind generic try-catch blocks handling unexpected `Exception` states.",
+                    startingCode: "public class Guard {\n    public void process() {\n        // Wrap tracking boundaries safely\n        \n        System.out.println();\n        \n    }\n}",
+                    tests: [{ desc: "Defines try and catch structural boundaries safely", rule: c => /try\s*\{/.test(c) && /catch\s*\(\s*Exception\s+\w+\s*\)/.test(c) }]
+                }
+            ],
+            advanced: [
+                {
+                    title: "Lambda Expression Architecture",
+                    instructions: "Construct functional runnable definitions via minimalist lambda assignments writing target instructions inline.",
+                    startingCode: "public class Threading {\n    public void context() {\n        Runnable r = () -> System.out.println(\"Run\");\n    }\n}",
+                    tests: [{ desc: "Maps clear operational definitions via functional layouts", rule: c => /Runnable\s+\w+\s*=\s*\(\s*\)\s*->/.test(c) }]
+                },
+                {
+                    title: "Stream Pipeline Reductions",
+                    instructions: "Call `.stream()` onto matching base entities collection converting standard collections directly.",
+                    startingCode: "import java.util.List;\npublic class Pipeline {\n    public void process(List<String> data) {\n        // Open operations streams pipeline infrastructure\n        \n    }\n}",
+                    tests: [{ desc: "Invokes functional conversion methods cleanly", rule: c => /data\.stream\(\)/.test(c) }]
+                },
+                {
+                    title: "Generic Container Layouts",
+                    instructions: "Design generic container structures using flexible placeholder keys variable types marked globally by designation `T`.",
+                    startingCode: "public class Wrapper<T> {\n    // Create data storage slot typed precisely with generic placeholders\n    \n}",
+                    tests: [{ desc: "Enforces typing structural configurations dynamically", rule: c => /private\s+T\s+\w+\s*;/.test(c) || /public\s+T\s+\w+/.test(c) }]
+                },
+                {
+                    title: "Concurrent Process Instantiations",
+                    instructions: "Instantiate standalone thread execution contexts passing target runner variable context assignments directly.",
+                    startingCode: "public class Engine {\n    public void boot(Runnable runner) {\n        // Spin isolated tracking runtimes natively\n        \n    }\n}",
+                    tests: [{ desc: "Fires structural concurrency initializations accurately", rule: c => /new\s+Thread\(\s*runner\s*\)/.test(c) }]
+                },
+                {
+                    title: "JVM Memory Target Referencing",
+                    instructions: "Point allocations directly toward null reference parameters simulating explicitly clear pointer configurations safely.",
+                    startingCode: "public class Clear {\n    public void empty() {\n        Object item = null;\n    }\n}",
+                    tests: [{ desc: "Purges tracking links directly inside native frames", rule: c => /item\s*=\s*null\s*;/.test(c) || /Object\s+item\s*=\s*null\s*;/.test(c) }]
+                }
+            ]
+        };
+
+        let currentLevel = '';
+        let currentIdx = 0;
+        let isNextState = false;
+
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startLevel(levelKey) {
+            currentLevel = levelKey;
+            currentIdx = 0;
+            isNextState = false;
+            navigateTo('screen-gameplay');
+            loadChallenge();
+        }
+
+        function loadChallenge() {
+            const list = challengeBank[currentLevel];
+            const item = list[currentIdx];
+            
+            document.getElementById('game-level-title').textContent = `${currentLevel} mode`;
+            document.getElementById('game-progress-text').textContent = `Challenge ${currentIdx + 1} of 5`;
+            document.getElementById('progress-fill').style.width = `${((currentIdx + 1) / 5) * 100}%`;
+            
+            document.getElementById('challenge-title').textContent = item.title;
+            document.getElementById('challenge-instructions').textContent = item.instructions;
+            document.getElementById('code-editor').value = item.startingCode;
+            
+            const listContainer = document.getElementById('test-list');
+            listContainer.innerHTML = '';
+            item.tests.forEach((t, i) => {
+                const div = document.createElement('div');
+                div.className = 'test-item';
+                div.innerHTML = `<span id="ts-${i}" class="test-status">○</span> <span>${t.desc}</span>`;
+                listContainer.appendChild(div);
+            });
+
+            document.getElementById('feedback').textContent = '';
+            const actionBtn = document.getElementById('action-btn');
+            actionBtn.textContent = 'Run Tests';
+            actionBtn.style.backgroundColor = 'var(--accent-primary)';
+            isNextState = false;
+        }
+
+        function handleAction() {
+            if (isNextState) {
+                currentIdx++;
+                if (currentIdx >= 5) {
+                    navigateTo('screen-complete');
+                } else {
+                    loadChallenge();
+                }
+                return;
+            }
+
+            const list = challengeBank[currentLevel];
+            const item = list[currentIdx];
+            const code = document.getElementById('code-editor').value;
+            let levelPassed = true;
+
+            item.tests.forEach((t, i) => {
+                const indicator = document.getElementById(`ts-${i}`);
+                if (t.rule(code)) {
+                    indicator.textContent = '✓';
+                    indicator.style.backgroundColor = varColor('--success');
+                } else {
+                    indicator.textContent = '✕';
+                    indicator.style.backgroundColor = varColor('--danger');
+                    levelPassed = false;
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            const actionBtn = document.getElementById('action-btn');
+
+            if (levelPassed) {
+                feedback.textContent = '🎉 Compilation successful! All test validations passed.';
+                feedback.style.color = varColor('--success');
+                actionBtn.textContent = currentIdx === 4 ? 'Finish Level' : 'Next Challenge';
+                actionBtn.style.backgroundColor = varColor('--success');
+                isNextState = true;
+            } else {
+                feedback.textContent = '❌ Validations failed. Review requirements and logic structures.';
+                feedback.style.color = varColor('--danger');
+            }
+        }
+
+        function varColor(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+    </script>
+</body>
 </html>
